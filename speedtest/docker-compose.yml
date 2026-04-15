@@ -1,0 +1,22 @@
+services:
+  speedtest-tracker:
+    image: lscr.io/linuxserver/speedtest-tracker:latest
+    container_name: speedtest-tracker
+    ports:
+      - "8765:80"
+    environment:
+      - DB_CONNECTION=sqlite
+      - DB_DATABASE=/config/database/database.sqlite
+      - APP_KEY=base64::+ry/D7u25E6jIiQCDBsP8hqaGJbU7E9GUo6Bx7/7H68=
+      - PUID=1000
+      - PGID=1000
+      - SPEEDTEST_SCHEDULE=0 */1 * * *
+    volumes:
+      - ./config:/config
+    restart: unless-stopped
+    networks:
+      - shared-net
+
+networks:
+  shared-net:
+    external: true

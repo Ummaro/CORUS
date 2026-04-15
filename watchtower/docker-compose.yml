@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  watchtower:
+    image: nickfedor/watchtower:latest
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8010:8080"
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+    command: >
+      --cleanup
+      --interval 3600
+      --http-api-metrics
+      --http-api-token ${WATCHTOWER_HTTP_API_TOKEN}
+    networks:
+      - shared-net
+
+networks:
+  shared-net:
+    external: true

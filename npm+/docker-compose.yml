@@ -1,0 +1,72 @@
+services:
+  npmplus:
+    image: docker.io/zoeyvid/npmplus:latest
+    container_name: npmplus
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "81:81"
+      - "8291:91"
+      - "443:443"
+      - "443:443/udp"
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+      - SETGID
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - TZ=Europe/Paris
+      - LOGROTATE=true
+      - GOA=true
+      - GOA_LISTEN_LOCALHOST=false
+      - LOGROTATIONS=14
+      - NGINX_WORKER_PROCESSES=auto
+      - NGINX_WORKER_CONNECTIONS=1024
+      - CERTBOT_RUN_INTERVAL=24
+    volumes:
+      - ./data:/data
+    networks:
+      - shared-net
+
+  crowdsec:
+    image: docker.io/crowdsecurity/crowdsec:latest
+    container_name: npmplus-crowdsec
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Paris
+      - USE_WAL=true
+      - COLLECTIONS=ZoeyVid/npmplus
+      - TRUSTED_IPS=127.0.0.1,::1,172.16.0.0/12
+    volumes:
+      - ./data/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro
+      - ./data/crowdsec/lib:/var/lib/crowdsec/data
+      - ./data/nginx/logs:/var/log/npm:ro
+    networks:
+      - shared-net
+
+  crowdsec-web-ui:
+    image: ghcr.io/theduffman85/crowdsec-web-ui:latest
+    container_name: crowdsec_web_ui
+    restart: unless-stopped
+    depends_on:
+      - crowdsec
+    ports:
+      - "3004:3000"
+    environment:
+      - CROWDSEC_URL=http://npmplus-crowdsec:8080
+      - CROWDSEC_USER=crowdsec-web-ui
+      - CROWDSEC_PASSWORD=${NPMPLUS_CROWDSEC_PASSWORD}
+      - CROWDSEC_SIMULATIONS_ENABLED=true
+      - CROWDSEC_REFRESH_INTERVAL=30s
+      - CROWDSEC_BOOTSTRAP_RETRY_ENABLED=true
+      - CROWDSEC_BOOTSTRAP_RETRY_DELAY=30s
+    volumes:
+      - ./data/crowdsec-web-ui:/app/data
+    networks:
+      - shared-net
+
+networks:
+  shared-net:
+    external: true

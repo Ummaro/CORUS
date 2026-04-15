@@ -1,0 +1,28 @@
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    shm_size: '256mb'
+    environment:
+      TZ: 'Europe/Paris'
+      WEBPASSWORD: '${PIHOLE_WEBPASSWORD}'
+      FTLCONF_dns_listeningMode: 'all'
+    volumes:
+      - './etc-pihole:/etc/pihole'
+      - './etc-dnsmasq.d:/etc/dnsmasq.d'
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+    networks:
+      pihole_network:
+        ipv4_address: ${PIHOLE_IPV4_ADDRESS}
+
+networks:
+  pihole_network:
+    driver: macvlan
+    driver_opts:
+      parent: ens18
+    ipam:
+      config:
+        - subnet: ${PIHOLE_SUBNET}
+          gateway: ${PIHOLE_GATEWAY}

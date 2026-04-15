@@ -1,0 +1,28 @@
+- resources:
+    cpu: true
+    memory: true
+    cputemp: false
+    network: false
+    tempmin: 0
+    tempmax: 100
+    uptime: true
+    units: metric
+    expanded: true
+
+- resources:
+    label: HDD Media
+    disk: 
+    - /mnt/DAS1
+    - /mnt/DAS2
+    expanded: true
+
+- resources:
+    label: System (Docker)
+    disk: /
+    expanded: true
+
+- search:
+    provider: duckduckgo
+    focus: false
+    showSearchSuggestions: true
+    target: _self

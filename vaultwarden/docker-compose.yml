@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./data:/data
+    environment:
+      - WEBSOCKET_ENABLED=true
+      - ADMIN_TOKEN=${VAULTWARDEN_ADMIN_TOKEN}
+      # SMTP via relay interne
+      - SMTP_HOST=smtp-relay
+      - SMTP_PORT=25
+      - SMTP_SECURITY=off
+      - SMTP_FROM=${VAULTWARDEN_SMTP_FROM}
+      - SMTP_FROM_NAME=Vaultwarden
+    networks:
+      - shared-net
+
+networks:
+  shared-net:
+    external: true

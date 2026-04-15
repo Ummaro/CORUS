@@ -1,0 +1,89 @@
+services:
+  addy:
+    image: anonaddy/anonaddy:latest
+    container_name: addy
+    restart: unless-stopped
+    depends_on:
+      - addy-db
+      - addy-redis
+    ports:
+      - "25:25"       # SMTP (doit être exposé directement)
+      - "8888:8000"  # Interface Web (à mettre derrière un reverse proxy)
+      - "11334:11334" # Rspamd
+    environment:
+      - TZ=Europe/Paris
+      - PUID=1000
+      - PGID=1000
+      # App
+      - APP_NAME=addy.io
+      - APP_KEY=${ADDY_APP_KEY}
+      - APP_DEBUG=false
+      - APP_URL=${ADDY_APP_URL}
+      - ANONADDY_DOMAIN=${ADDY_ANONADDY_DOMAIN}
+      - ANONADDY_HOSTNAME=${ADDY_ANONADDY_HOSTNAME}
+      - ANONADDY_SECRET=${ADDY_ANONADDY_SECRET}                  # Générer avec: openssl rand -base64 32
+      - ANONADDY_RETURN_PATH=${ADDY_ANONADDY_RETURN_PATH}
+      - ANONADDY_ADMIN_USERNAME=Ummaro          # Username admin (optionnel)
+      - ANONADDY_ENABLE_REGISTRATION=true
+      - ANONADDY_LIMIT=1000000
+      - ANONADDY_BANDWIDTH_LIMIT=1099511627776
+      - ANONADDY_NEW_ALIAS_LIMIT=1000
+      - ANONADDY_ADDITIONAL_USERNAME_LIMIT=1000
+      # Base de données
+      - DB_HOST=addy-db
+      - DB_PORT=3306
+      - DB_DATABASE=anonaddy
+      - DB_USERNAME=anonaddy
+      - DB_PASSWORD=${ADDY_DB_PASSWORD}              # Remplacer par un mot de passe fort
+      # Redis
+      - REDIS_HOST=addy-redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${ADDY_REDIS_PASSWORD}           # Remplacer par un mot de passe fort
+      # Mail
+      - MAIL_FROM_NAME=addy.io
+      - MAIL_FROM_ADDRESS=${ADDY_MAIL_FROM_ADDRESS}
+      # Postfix
+      - POSTFIX_MESSAGE_SIZE_LIMIT=26214400
+      - POSTFIX_SMTP_TLS=may
+      - POSTFIX_RELAYHOST=ssl0.ovh.net:587
+      - POSTFIX_RELAYHOST_AUTH_ENABLE=true
+      - POSTFIX_RELAYHOST_USERNAME=${ADDY_POSTFIX_RELAYHOST_USERNAME}
+      - POSTFIX_RELAYHOST_PASSWORD=${ADDY_POSTFIX_RELAYHOST_PASSWORD}
+      # Rspamd (recommandé pour les réponses anonymes)
+      - RSPAMD_ENABLE=true
+      - RSPAMD_WEB_PASSWORD=${ADDY_RSPAMD_WEB_PASSWORD}      # Remplacer par un mot de passe fort
+    volumes:
+      - ./data:/data
+    networks:
+      - addy-net
+      - shared-net
+
+  addy-db:
+    image: mariadb:11
+    container_name: addy-db
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=${ADDY_MYSQL_ROOT_PASSWORD} # Remplacer par un mot de passe fort
+      - MYSQL_DATABASE=anonaddy
+      - MYSQL_USER=anonaddy
+      - MYSQL_PASSWORD=${ADDY_MYSQL_PASSWORD}           # Doit correspondre à DB_PASSWORD
+    volumes:
+      - ./db:/var/lib/mysql
+    networks:
+      - addy-net
+
+  addy-redis:
+    image: redis:7-alpine
+    container_name: addy-redis
+    restart: unless-stopped
+    command: redis-server --requirepass ${ADDY_REDIS_PASSWORD}  # Doit correspondre à REDIS_PASSWORD
+    volumes:
+      - ./redis:/data
+    networks:
+      - addy-net
+
+networks:
+  shared-net:
+    external: true
+  addy-net:
+    driver: bridge

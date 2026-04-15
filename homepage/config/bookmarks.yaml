@@ -1,0 +1,86 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/bookmarks
+
+- Social:
+    - Reddit:
+        - icon: https://cdn.simpleicons.org/reddit
+          href: https://reddit.com/
+    - Discord:
+        - icon: https://cdn.simpleicons.org/discord
+          href: https://discord.com/channels/@me
+    - Gmail:
+        - icon: https://cdn.simpleicons.org/gmail
+          href: https://mail.google.com/mail/u/0/?pli=1#inbox
+
+- Entertainment:
+    - YouTube:
+        - icon: https://cdn.simpleicons.org/youtube
+          href: https://youtube.com/
+    - Steam:
+        - icon: https://www.google.com/s2/favicons?sz=64&domain=store.steampowered.com
+          href: https://store.steampowered.com/
+    - Twitch:
+        - icon: https://cdn.simpleicons.org/twitch
+          href: https://twitch.com/
+    - Osu!:
+        - icon: https://cdn.simpleicons.org/osu
+          href: https://osu.ppy.sh/
+    - Webtoon:
+        - icon: https://cdn.simpleicons.org/webtoon
+          href: https://webtoon.com/en/
+
+- Others:
+    - School:
+        - icon: https://www.google.com/s2/favicons?sz=64&domain=myges.fr
+          href: https://myges.fr/
+
+    - Pwn College:
+        - icon: https://www.google.com/s2/favicons?sz=64&domain=pwn.college
+          href: https://pwn.college
+
+    - Netacad:
+        - icon: https://www.google.com/s2/favicons?sz=64&domain=netacad.com
+          href: https://netacad.com
+
+    - Globalexam:
+        - icon: https://www.google.com/s2/favicons?sz=64&domain=global-exam.com
+          href: https://global-exam.com
+
+- Tools:
+    - Github:
+        - icon: https://cdn.simpleicons.org/github
+          href: https://github.com/
+
+    - Chatgpt:
+        - icon: https://cdn.simpleicons.org/openai
+          href: https://chatgpt.com/
+
+    - Gemini:
+        - icon: https://cdn.simpleicons.org/googlegemini
+          href: https://gemini.google.com/
+    
+    - OVH:
+        - icon: ovh
+          href: "{{HOMEPAGE_VAR_OVH_HREF}}"
+
+- Shop:
+    - Amazon:
+        - icon: https://www.google.com/s2/favicons?sz=64&domain=amazon.com
+          href: https://www.amazon.fr
+
+    - TRC:
+        - icon: https://www.google.com/s2/favicons?sz=64&domain=app.therunningcollective.com
+          href: https://app.therunningcollective.com
+
+- Torrents:
+    - Torr9:
+        - icon: https://www.google.com/s2/favicons?sz=64&domain=torr9.net
+          href: https://torr9.net/
+    - C411:
+        - icon: https://www.google.com/s2/favicons?sz=64&domain=c411.org
+          href: https://c411.org/
+    - DigitalCore:
+        - icon: https://www.google.com/s2/favicons?sz=64&domain=digitalcore.club
+          href: https://digitalcore.club/
+    

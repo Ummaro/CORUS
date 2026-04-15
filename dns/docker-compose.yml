@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  coredns:
+    image: coredns/coredns:latest
+    container_name: coredns
+    volumes:
+      - ./Corefile:/Corefile:ro
+    ports:
+      - "53:53/udp"
+      - "53:53/tcp"
+    restart: unless-stopped
+    command: -conf /Corefile
+    networks:
+      - shared-net
+
+networks:
+  shared-net:
+    external: true

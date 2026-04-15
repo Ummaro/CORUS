@@ -1,0 +1,29 @@
+services:
+  smtp-relay:
+    image: boky/postfix:latest
+    container_name: smtp-relay
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Paris
+      # Relais sortant (OVH)
+      - RELAYHOST=ssl0.ovh.net:587
+      - RELAYHOST_USERNAME=${SMTP_RELAY_RELAYHOST_USERNAME}
+      - RELAYHOST_PASSWORD=${SMTP_RELAY_RELAYHOST_PASSWORD}
+      # Réseaux internes Docker autorisés à envoyer sans auth
+      - POSTFIX_mynetworks=${SMTP_RELAY_MYNETWORKS}
+      # En-tête From par défaut si absent
+      - MYHOSTNAME=${SMTP_RELAY_MYHOSTNAME}
+      # Autoriser n'importe quel domaine expéditeur (les conteneurs internes contrôlent l'adresse From)
+      - ALLOW_EMPTY_SENDER_DOMAINS=1
+      # Désactiver DKIM ici (addy.io gère déjà le DKIM pour ses propres envois)
+      - DKIM_ENABLED=0
+    # Port 587 exposé uniquement en local (optionnel, accès via réseau Docker suffit)
+    # ports:
+    #   - "127.0.0.1:587:587"
+    networks:
+      shared-net:
+         ipv4_address: ${SMTP_RELAY_IPV4_ADDRESS}
+
+networks:
+  shared-net:
+    external: true

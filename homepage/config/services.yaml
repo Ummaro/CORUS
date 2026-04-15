@@ -1,0 +1,406 @@
+- Infrastructure:
+    # - Portainer:
+    #     href: "{{HOMEPAGE_VAR_PORTAINER_HREF}}"
+    #     icon: portainer
+    #     container: portainer
+    #     widget:
+    #       type: portainer
+    #       url: http://portainer:9000
+    #       env: 3
+    #       key: "{{HOMEPAGE_VAR_PORTAINER_KEY}}"
+
+    - Arcane:
+        href: "{{HOMEPAGE_VAR_ARCANE_HREF}}"
+        icon: arcane
+        server: my-docker
+        container: arcane
+        widget:
+          type: arcane
+          url: http://arcane:3552
+          env: 0
+          key: "{{HOMEPAGE_VAR_ARCANE_KEY}}"
+
+    - Watchtower:
+        icon: watchtower
+        server: my-docker
+        container: watchtower
+        widget:
+          type: watchtower
+          url: http://watchtower:8080
+          key: "{{HOMEPAGE_VAR_WATCHTOWER_KEY}}"
+
+    - Nginx Proxy Manager:
+        href: "{{HOMEPAGE_VAR_NPM_HREF}}"
+        icon: nginx
+        server: my-docker
+        container: npmplus
+        widget:
+          type: npm
+          url: https://npmplus:81
+          username: ummarolord@gmail.com
+          password: "{{HOMEPAGE_VAR_NPM_PASSWORD}}"
+
+    - Router / DNS:
+        href: "{{HOMEPAGE_VAR_ROUTER_HREF}}"
+        icon: router
+        server: my-docker
+        container: coredns
+        widget:
+          type: speedtest
+          url: http://speedtest-tracker:80
+
+    - Wireguard:
+        href: "{{HOMEPAGE_VAR_WIREGUARD_HREF}}"
+        icon: wireguard
+        server: my-docker
+        container: wg-easy
+        widget:
+          type: wgeasy
+          version: 2
+          url: http://wg-easy:51821
+          username: Ummaro
+          password: "{{HOMEPAGE_VAR_WG_EASY_PASSWORD}}"
+
+    - Pihole:
+        href: "{{HOMEPAGE_VAR_PIHOLE_HREF}}"
+        icon: https://www.google.com/s2/favicons?sz=64&domain=pi-hole.net
+        server: my-docker
+        container: pihole
+        widget:
+          type: pihole
+          url: "{{HOMEPAGE_VAR_PIHOLE_API_URL}}"
+          version: 6
+          key: "{{HOMEPAGE_VAR_PIHOLE_KEY}}"
+
+- Monitoring:
+    - Uptime Kuma:
+        href: "{{HOMEPAGE_VAR_UPTIME_HREF}}"
+        icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/uptime-kuma.png
+        server: my-docker
+        container: uptime-kuma
+        widget:
+          type: uptimekuma
+          url: http://uptime-kuma:3001
+          slug: global
+
+    - Grafana:
+        href: "{{HOMEPAGE_VAR_GRAFANA_HREF}}"
+        icon: grafana
+        server: my-docker
+        container: grafana
+        widget:
+          type: grafana
+          url: http://grafana:3000
+          username: admin
+          password: "{{HOMEPAGE_VAR_GRAFANA_PASSWORD}}"
+
+    - Crowdsec:
+        href: "{{HOMEPAGE_VAR_CROWDSEC_HREF}}"
+        icon: crowdsec
+        server: my-docker
+        container: npmplus-crowdsec
+        widget:
+            type: crowdsec
+            url: http://npmplus-crowdsec:8080
+            username: "{{HOMEPAGE_VAR_CROWDSEC_USERNAME}}"
+            password: "{{HOMEPAGE_VAR_CROWDSEC_PASSWORD}}"
+            limit24h: true
+    
+    - Goaccess:
+        href: "{{HOMEPAGE_VAR_GOACCESS_HREF}}"
+        icon: goaccess
+        server: my-docker
+        container: npmplus
+
+
+    - Grafana - Proxmox CPU:
+        href: "{{HOMEPAGE_VAR_GRAFANA_PROXMOX_HREF}}"
+        widget:
+          type: iframe
+          src: "{{HOMEPAGE_VAR_GRAFANA_PROXMOX_CPU_SRC}}"
+          classes: h-96 sm:h-96 md:h-96 lg:h-96 xl:h-96
+          refreshInterval: 60000
+
+    - Grafana - Proxmox RAM:
+        href: "{{HOMEPAGE_VAR_GRAFANA_PROXMOX_HREF}}"
+        widget:
+          type: iframe
+          src: "{{HOMEPAGE_VAR_GRAFANA_PROXMOX_RAM_SRC}}"
+          classes: h-96 sm:h-96 md:h-96 lg:h-96 xl:h-96
+          refreshInterval: 60000
+
+    - Grafana - Docker CPU:
+        href: "{{HOMEPAGE_VAR_GRAFANA_DOCKER_HREF}}"
+        widget:
+          type: iframe
+          src: "{{HOMEPAGE_VAR_GRAFANA_DOCKER_CPU_SRC}}"
+          classes: h-96 sm:h-96 md:h-96 lg:h-96 xl:h-96
+          refreshInterval: 60000
+
+    - Grafana - Docker RAM:
+        href: "{{HOMEPAGE_VAR_GRAFANA_DOCKER_HREF}}"
+        widget:
+          type: iframe
+          src: "{{HOMEPAGE_VAR_GRAFANA_DOCKER_RAM_SRC}}"
+          classes: h-96 sm:h-96 md:h-96 lg:h-96 xl:h-96
+          refreshInterval: 60000
+
+- Services:
+    - Linkwarden:
+        href: "{{HOMEPAGE_VAR_LINKWARDEN_HREF}}"
+        icon: linkwarden
+        server: my-docker
+        container: linkwarden
+        widget:
+          type: linkwarden
+          url: http://linkwarden:3000
+          key: "{{HOMEPAGE_VAR_LINKWARDEN_KEY}}"
+
+    - Nextcloud:
+        href: "{{HOMEPAGE_VAR_NEXTCLOUD_HREF}}"
+        icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/nextcloud.png
+        server: my-docker
+        container: nextcloud-app
+        widget:
+          type: nextcloud
+          url: http://nextcloud-app:80
+          username: Ummaro
+          password: "{{HOMEPAGE_VAR_NEXTCLOUD_PASSWORD}}"
+
+    - ChangeDetection.io:
+        href: "{{HOMEPAGE_VAR_CHANGEDETECTION_HREF}}"
+        icon: https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://changedetection.io&size=64
+        server: my-docker
+        container: changedetection
+        widget:
+          type: changedetectionio
+          url: http://changedetection:5000
+          key: "{{HOMEPAGE_VAR_CHANGEDETECTION_KEY}}"
+
+    - Wallos:
+        href: "{{HOMEPAGE_VAR_WALLOS_HREF}}"
+        icon: wallos
+        server: my-docker
+        container: wallos
+        widget:
+          type: wallos
+          url: http://wallos:80
+          key: "{{HOMEPAGE_VAR_WALLOS_KEY}}"
+
+    - Vaultwarden:
+        href: "{{HOMEPAGE_VAR_VAULTWARDEN_HREF}}"
+        icon: vault
+        server: my-docker
+        container: vaultwarden
+
+    - Addy.io:
+        href: "{{HOMEPAGE_VAR_ADDY_HREF}}"
+        icon: https://www.google.com/s2/favicons?sz=64&domain=addy.io
+        server: my-docker
+        container: addy
+
+- Calendar:
+    - Calendar:
+        widget:
+            type: calendar
+            showTime: true
+            timezone: Europe/Paris
+            view: monthly
+            integrations:
+            - type: radarr
+              service_group: Media
+              service_name: Radarr
+              baseUrl: http://radarr:7878
+            - type: sonarr
+              service_group: Media
+              service_name: Sonarr
+              baseUrl: http://sonarr:8989
+            - type: ical
+              url: https://calendar.google.com/calendar/ical/jdamas.2624%40gmail.com/private-b95ae89c233e91f4cba401cd5de22993/basic.ics
+              name: Personal
+            - type: ical
+              url: "{{HOMEPAGE_VAR_WALLOS_ICAL_URL}}"
+              name: Wallos
+              color: sky
+
+    - Release:
+        widget:
+            type: calendar
+            showTime: true
+            timezone: Europe/Paris
+            view: agenda
+            previousDays: 30
+            integrations:
+            - type: radarr
+              service_group: Media
+              service_name: Radarr
+              baseUrl: http://radarr:7878
+            - type: sonarr
+              service_group: Media
+              service_name: Sonarr
+              baseUrl: http://sonarr:8989
+
+    - Events:
+        widget:
+            type: calendar
+            showTime: true
+            timezone: Europe/Paris
+            view: agenda
+            previousDays: 0
+            maxEvents: 5
+            integrations:
+            - type: ical
+              url: https://calendar.google.com/calendar/ical/jdamas.2624%40gmail.com/private-b95ae89c233e91f4cba401cd5de22993/basic.ics
+              name: Personal
+            - type: ical
+              url: "{{HOMEPAGE_VAR_WALLOS_ICAL_URL}}"
+              name: Wallos
+              color: sky
+
+- Media:
+    - Jellyfin:
+        href: "{{HOMEPAGE_VAR_JELLYFIN_HREF}}"
+        icon: jellyfin
+        widget:
+          type: jellyfin
+          url: "{{HOMEPAGE_VAR_JELLYFIN_API_URL}}"
+          key: "{{HOMEPAGE_VAR_JELLYFIN_KEY}}"
+          enableBlocks: true
+          enableNowPlaying: true
+          enableUser: true
+          showEpisodeNumber: true
+
+    - Seerr:
+        href: "{{HOMEPAGE_VAR_SEERR_HREF}}"
+        icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/jellyseerr.png
+        server: my-docker
+        container: seerr
+        widget:
+          type: jellyseerr
+          url: http://seerr:5055
+          key: "{{HOMEPAGE_VAR_SEERR_KEY}}"
+
+    - Prowlarr:
+        href: "{{HOMEPAGE_VAR_PROWLARR_HREF}}"
+        icon: prowlarr
+        server: my-docker
+        container: prowlarr
+        widget:
+          type: prowlarr
+          url: http://gluetun:9696
+          key: "{{HOMEPAGE_VAR_PROWLARR_KEY}}"
+
+    - Radarr:
+        href: "{{HOMEPAGE_VAR_RADARR_HREF}}"
+        icon: radarr
+        server: my-docker
+        container: radarr
+        widget:
+          type: radarr
+          url: http://radarr:7878
+          key: "{{HOMEPAGE_VAR_RADARR_KEY}}"
+          enableQueue: true
+
+    - Sonarr:
+        href: "{{HOMEPAGE_VAR_SONARR_HREF}}"
+        icon: sonarr
+        server: my-docker
+        container: sonarr
+        widget:
+          type: sonarr
+          url: http://sonarr:8989
+          key: "{{HOMEPAGE_VAR_SONARR_KEY}}"
+          enableQueue: true
+
+    - Bazarr:
+        href: "{{HOMEPAGE_VAR_BAZARR_HREF}}"
+        icon: bazarr
+        server: my-docker
+        container: bazarr
+        widget:
+          type: bazarr
+          url: http://bazarr:6767
+          key: "{{HOMEPAGE_VAR_BAZARR_KEY}}"
+          enableQueue: true
+
+    - qBittorrent:
+        href: "{{HOMEPAGE_VAR_QBITTORRENT_HREF}}"
+        icon: qbittorrent
+        server: my-docker
+        container: qbittorrentvpn
+        widget:
+          type: qbittorrent
+          url: http://qbittorrentvpn:8082
+          username: admin
+          password: "{{HOMEPAGE_VAR_QBITTORRENT_PASSWORD}}"
+          enableLeechProgress: true
+
+- Hypervisor:
+    - Proxmox:
+        href: "{{HOMEPAGE_VAR_PROXMOX_HREF}}"
+        icon: proxmox
+        widget:
+          type: proxmox
+          url: "{{HOMEPAGE_VAR_PROXMOX_API_URL}}"
+          username: "{{HOMEPAGE_VAR_PROXMOX_USERNAME}}"
+          password: "{{HOMEPAGE_VAR_PROXMOX_PASSWORD}}"
+          node: proxmox
+
+- VMs - Main:
+    - Docker:
+        icon: https://cdn.simpleicons.org/docker
+        proxmoxNode: proxmox
+        proxmoxVMID: 100
+        showStats: true
+
+    - Kali:
+        icon: https://www.kali.org/images/kali-logo.svg
+        proxmoxNode: proxmox
+        proxmoxVMID: 101
+        showStats: true
+
+- VMs - Dev:
+    - Trash:
+        icon: https://cdn.simpleicons.org/git
+        proxmoxNode: proxmox
+        proxmoxVMID: 102
+        showStats: true
+
+    - OsuProfiler:
+        icon: https://cdn.simpleicons.org/git
+        proxmoxNode: proxmox
+        proxmoxVMID: 103
+        showStats: true
+
+    - GarminStats:
+        icon: https://cdn.simpleicons.org/git
+        proxmoxNode: proxmox
+        proxmoxVMID: 104
+        showStats: true
+
+    - Boids:
+        icon: https://cdn.simpleicons.org/git
+        proxmoxNode: proxmox
+        proxmoxVMID: 105
+        showStats: true
+
+    - ScrapFFA:
+        icon: https://cdn.simpleicons.org/git
+        proxmoxNode: proxmox
+        proxmoxVMID: 106
+        showStats: true
+
+- VMs - Prod:
+    - Portfolio:
+        href: "{{HOMEPAGE_VAR_PORTFOLIO_HREF}}"
+        icon: https://cdn.simpleicons.org/serverfault
+        proxmoxNode: proxmox
+        proxmoxVMID: 108
+        showStats: true
+
+    - Boids:
+        href: "{{HOMEPAGE_VAR_BOIDS_HREF}}"
+        icon: https://cdn.simpleicons.org/serverfault
+        proxmoxNode: proxmox
+        proxmoxVMID: 108
+        showStats: true

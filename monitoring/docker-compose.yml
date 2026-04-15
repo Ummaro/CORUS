@@ -1,0 +1,74 @@
+services:
+  glances:
+    image: nicolargo/glances:latest-full
+    container_name: glances
+    hostname: docker
+    restart: unless-stopped
+    pid: host
+    mem_limit: 128m
+    cpus: 0.1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/os-release:/etc/os-release:ro
+      - ./glances.conf:/etc/glances/glances.conf:ro
+    environment:
+      - GLANCES_OPT=-q --export influxdb2
+    depends_on:
+      - influxdb
+    networks:
+      - shared-net
+
+  influxdb:
+    image: influxdb:2
+    container_name: influxdb
+    restart: unless-stopped
+    mem_limit: 768m
+    mem_reservation: 400m
+    cpus: 0.5
+    ports:
+      - "8086:8086"
+    volumes:
+      - ./influxdb-data:/var/lib/influxdb2
+      - ./influxdb-config:/etc/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${MONITORING_INFLUXDB_INIT_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_ORG=myorg
+      - DOCKER_INFLUXDB_INIT_BUCKET=monitoring
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${MONITORING_INFLUXDB_INIT_ADMIN_TOKEN}
+      - DOCKER_INFLUXDB_INIT_RETENTION=30d
+      # Limite le cache mémoire (défaut: 1 Go)
+      - INFLUXD_STORAGE_CACHE_MAX_MEMORY_SIZE=134217728
+      # Snapshot vers disque dès 32 Mo en cache
+      - INFLUXD_STORAGE_CACHE_SNAPSHOT_MEMORY_SIZE=33554432
+    networks:
+      - shared-net
+
+  grafana:
+    image: grafana/grafana:10.4.7
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3030:3000"
+    volumes:
+      - ./grafana-data:/var/lib/grafana
+      - ./grafana-provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${MONITORING_GF_SECURITY_ADMIN_PASSWORD}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+      - GF_AUTH_ANONYMOUS_ORG_NAME=Main Org.
+      - GF_SERVER_ROOT_URL=${MONITORING_GF_SERVER_ROOT_URL}
+      - GF_SERVER_SERVE_FROM_SUB_PATH=false
+    depends_on:
+      - influxdb
+    networks:
+      - shared-net
+
+networks:
+  shared-net:
+    external: true

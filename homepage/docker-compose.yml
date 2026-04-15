@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    ports:
+      - 3000:3000
+    env_file:
+      - /home/docker/.env
+    environment:
+      - HOMEPAGE_ALLOWED_HOSTS=*
+    volumes:
+      - ./config:/app/config
+      - ./config/custom.css:/app/public/custom.css
+      - ./config/custom.js:/app/public/custom.js
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+  
+      - /mnt/DAS1:/mnt/DAS1:ro
+      - /mnt/DAS2:/mnt/DAS2:ro
+    privileged: true
+    restart: unless-stopped
+    networks:
+      - shared-net
+
+networks:
+  shared-net:
+    external: true

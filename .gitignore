@@ -1,0 +1,14 @@
+*
+!/.gitignore
+!/README.md
+!/*/
+/*/**
+!/*/docker-compose.yml
+!/*/docker-compose.yaml
+
+!/homepage/config/
+/homepage/config/**
+!/homepage/config/*.yaml
+!/homepage/config/*.json
+!/homepage/config/*.css
+!/homepage/config/*.js

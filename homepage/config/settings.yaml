@@ -1,0 +1,77 @@
+title: Corus Homepage
+language: en
+background: 
+    image: https://i.pinimg.com/originals/ed/4c/15/ed4c15b0c6e329982394bc0db9c52f50.jpg
+    blur: xs
+theme: dark
+color: slate
+fullWidth: false
+useEqualHeights: true
+hideVersion: true
+statusStyle: "dot"
+headerStyle: underlined
+hideErrors: false
+target: _self
+
+layout:
+  Calendar:
+    tab: Services
+    style: row
+    columns: 3
+  Services:
+    tab: Services
+    style: row
+    columns: 4
+  Media:
+    tab: Services
+    style: row
+    columns: 4
+  Infrastructure:
+    tab: Infrastructure
+    style: row
+    columns: 3
+  Monitoring:
+    tab: Infrastructure
+    style: row
+    columns: 2  
+  Hypervisor:
+    header: false
+    tab: Virtual Machines
+    style: row
+    columns: 1
+  VMs - Main:
+    tab: Virtual Machines
+    style: row
+    columns: 2
+  VMs - Dev:
+    tab: Virtual Machines
+    style: row
+    columns: 3
+  VMs - Prod:
+    tab: Virtual Machines
+    style: row
+    columns: 2
+  Social:
+    style: column
+    rows: 3
+    iconsOnly: false
+  Entertainment:
+    style: column
+    rows: 3
+    iconsOnly: false
+  Torrents:
+    style: column
+    rows: 3
+    iconsOnly: false
+  Others:
+    style: column
+    rows: 3
+    iconsOnly: false
+  Tools:
+    style: column
+    rows: 3
+    iconsOnly: false
+  Shop:
+    style: column
+    rows: 3
+    iconsOnly: false

@@ -1,0 +1,21 @@
+services:
+  fail2ban:
+    image: crazymax/fail2ban:latest
+    container_name: fail2ban
+    restart: unless-stopped
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    environment:
+      - TZ=Europe/Paris
+      - F2B_LOG_TARGET=STDOUT
+      - F2B_LOG_LEVEL=INFO
+      - F2B_DB_PURGE_AGE=7d
+    volumes:
+      # Configuration et données Fail2Ban
+      - ./data:/data
+      # Logs NPM
+      - /home/docker/nginxproxymanager/data/logs:/var/log/npm:ro
+      # Logs système
+      - /var/log:/var/log/host:ro

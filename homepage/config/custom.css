@@ -1,0 +1,16 @@
+.service-card {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(4px);
+  border-radius: 12px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.service-card:hover {
+  transform: scale(1.015);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+#footer {
+    display: block;
+}

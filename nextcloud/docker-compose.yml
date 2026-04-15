@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  db:
+    image: mariadb:11
+    container_name: nextcloud-db
+    restart: unless-stopped
+    volumes:
+      - ./nextcloud-db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${NEXTCLOUD_MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=${NEXTCLOUD_MYSQL_PASSWORD}
+    networks:
+      - shared-net
+
+  app:
+    image: nextcloud:28
+    container_name: nextcloud-app
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    volumes:
+      - ./nextcloud_config:/var/www/html
+      - ./nextcloud-data:/var/www/html/data
+    environment:
+      - MYSQL_PASSWORD=${NEXTCLOUD_MYSQL_PASSWORD}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_HOST=db
+    depends_on:
+      - db
+    networks:
+      - shared-net
+
+networks:
+  shared-net:
+    external: true
