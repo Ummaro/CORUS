@@ -1,0 +1,21 @@
+services:
+  gotify:
+    image: gotify/server:latest
+    container_name: gotify
+    restart: unless-stopped
+    ports:
+      - "8075:80"
+    env_file:
+      - /home/docker/.env
+    environment:
+      - TZ=Europe/Paris
+      - GOTIFY_DEFAULTUSER_NAME=${GOTIFY_DEFAULTUSER_NAME}
+      - GOTIFY_DEFAULTUSER_PASS=${GOTIFY_DEFAULTUSER_PASS}
+    volumes:
+      - ./data:/app/data
+    networks:
+      - shared-net
+
+networks:
+  shared-net:
+    external: true

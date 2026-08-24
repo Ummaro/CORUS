@@ -38,7 +38,7 @@ services:
       - TZ=Europe/Paris
       - USE_WAL=true
       - COLLECTIONS=ZoeyVid/npmplus
-      - TRUSTED_IPS=127.0.0.1,::1,172.16.0.0/12
+      - TRUSTED_IPS=127.0.0.1,::1,10.0.0.0/24,172.16.0.0/12,192.168.0.0/16
     volumes:
       - ./data/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro
       - ./data/crowdsec/lib:/var/lib/crowdsec/data
@@ -62,6 +62,7 @@ services:
       - CROWDSEC_REFRESH_INTERVAL=30s
       - CROWDSEC_BOOTSTRAP_RETRY_ENABLED=true
       - CROWDSEC_BOOTSTRAP_RETRY_DELAY=30s
+      - CONFIG_INSTANCE_METRICS_URL=http://npmplus-crowdsec:6060/metrics
     volumes:
       - ./data/crowdsec-web-ui:/app/data
     networks:

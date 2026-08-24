@@ -112,6 +112,11 @@
         server: my-docker
         container: npmplus
 
+    - TEI Embeddings:
+        href: "{{HOMEPAGE_VAR_TEI_HREF}}"
+        icon: https://cdn.simpleicons.org/huggingface
+        server: my-docker
+        container: tei
 
     - Grafana - Proxmox CPU:
         href: "{{HOMEPAGE_VAR_GRAFANA_PROXMOX_HREF}}"
@@ -280,6 +285,12 @@
           url: http://seerr:5055
           key: "{{HOMEPAGE_VAR_SEERR_KEY}}"
 
+    - Streamystats:
+        href: "{{HOMEPAGE_VAR_STREAMYSTATS_HREF}}"
+        icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/streamystats.png
+        server: my-docker
+        container: streamystats
+
     - Prowlarr:
         href: "{{HOMEPAGE_VAR_PROWLARR_HREF}}"
         icon: prowlarr
@@ -287,7 +298,7 @@
         container: prowlarr
         widget:
           type: prowlarr
-          url: http://gluetun:9696
+          url: http://proxy_0:9696
           key: "{{HOMEPAGE_VAR_PROWLARR_KEY}}"
 
     - Radarr:
@@ -327,13 +338,19 @@
         href: "{{HOMEPAGE_VAR_QBITTORRENT_HREF}}"
         icon: qbittorrent
         server: my-docker
-        container: qbittorrentvpn
+        container: qbittorrent
         widget:
           type: qbittorrent
-          url: http://qbittorrentvpn:8082
+          url: http://proxy_0:8082
           username: admin
           password: "{{HOMEPAGE_VAR_QBITTORRENT_PASSWORD}}"
           enableLeechProgress: true
+
+    - Rustatio:
+        href: "{{HOMEPAGE_VAR_RUSTATIO_HREF}}"
+        icon: https://takitsu21.github.io/rustatio-website/android-chrome-192x192.png
+        server: my-docker
+        container: rustatio
 
 - Hypervisor:
     - Proxmox:

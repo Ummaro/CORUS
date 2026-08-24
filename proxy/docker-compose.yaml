@@ -1,0 +1,3 @@
+# proxy_0, proxy_1 et leurs services dépendants sont dans ../media/docker-compose.yml
+# Ce fichier est conservé pour référence. Utiliser :
+#   cd /home/docker/media && docker compose up -d

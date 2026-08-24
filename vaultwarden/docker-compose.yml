@@ -9,9 +9,19 @@ services:
       - "8080:80"
     volumes:
       - ./data:/data
+    env_file:
+      - /home/docker/.env
     environment:
+      - DOMAIN=https://vault.ummaro.fr
       - WEBSOCKET_ENABLED=true
       - ADMIN_TOKEN=${VAULTWARDEN_ADMIN_TOKEN}
+      # SSO Google (OpenID Connect)
+      - SSO_ENABLED=${VAULTWARDEN_SSO_ENABLED}
+      - SSO_AUTHORITY=${VAULTWARDEN_SSO_AUTHORITY}
+      - SSO_CLIENT_ID=${VAULTWARDEN_SSO_CLIENT_ID}
+      - SSO_CLIENT_SECRET=${VAULTWARDEN_SSO_CLIENT_SECRET}
+      - SSO_AUTHORIZE_EXTRA_PARAMS=${VAULTWARDEN_SSO_AUTHORIZE_EXTRA_PARAMS}
+      - SSO_CLIENT_CACHE_EXPIRATION=${VAULTWARDEN_SSO_CLIENT_CACHE_EXPIRATION}
       # SMTP via relay interne
       - SMTP_HOST=smtp-relay
       - SMTP_PORT=25

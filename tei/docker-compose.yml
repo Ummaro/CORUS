@@ -1,0 +1,20 @@
+services:
+  tei:
+    image: ghcr.io/huggingface/text-embeddings-inference:cpu-1.8
+    container_name: tei
+    restart: unless-stopped
+    ports:
+      - "8090:80"
+    env_file:
+      - /home/docker/.env
+    environment:
+      - TZ=Europe/Paris
+      - MODEL_ID=${TEI_MODEL_ID:-intfloat/multilingual-e5-small}
+    volumes:
+      - ./data:/data
+    networks:
+      - shared-net
+
+networks:
+  shared-net:
+    external: true

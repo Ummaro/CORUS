@@ -34,43 +34,9 @@ services:
     networks:
       - shared-net
 
-  qbittorrentvpn:
-    image: binhex/arch-qbittorrentvpn
-    container_name: qbittorrentvpn
-    restart: unless-stopped
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    cap_add:
-      - NET_ADMIN
-    ports:
-      - "8082:8082"
-      - "6881:6881"
-      - "6881:6881/udp"
-    environment:
-      - VPN_ENABLED=yes
-      - VPN_PROV=protonvpn
-      - VPN_CLIENT=openvpn
-      - VPN_PORT_FORWARDING=yes
-      - VPN_PORT_FORWARDING_PROV=protonvpn
-      - STRICT_PORT_FORWARD=yes
-      - ENABLE_PRIVOXY=no
-      - LAN_NETWORK=${MEDIA_LAN_NETWORK}
-      - NAME_SERVERS=${MEDIA_NAME_SERVERS}
-      - VPN_USER=${MEDIA_VPN_USER}
-      - VPN_PASS=${MEDIA_VPN_PASS}
-      - WEBUI_PORT=8082
-      - PUID=1001
-      - PGID=1001
-      - TZ=Europe/Paris
-    volumes:
-      - ./qbittorrent:/config
-      - /mnt/DAS1:/media
-    networks:
-      - shared-net
-
-  gluetun:
+  proxy_0:
     image: qmcgaw/gluetun
-    container_name: gluetun
+    container_name: proxy_0
     restart: unless-stopped
     cap_add:
       - NET_ADMIN
@@ -79,26 +45,79 @@ services:
     ports:
       - "9696:9696"
       - "8191:8191"
+      - "8082:8082"
+      - "8088:8888"
+      - "8585:8080"
     environment:
       - VPN_SERVICE_PROVIDER=protonvpn
       - VPN_TYPE=openvpn
-      - OPENVPN_CUSTOM_CONFIG=/gluetun/custom.ovpn
+      - SERVER_COUNTRIES=France
       - OPENVPN_USER=${MEDIA_OPENVPN_USER}
       - OPENVPN_PASSWORD=${MEDIA_OPENVPN_PASSWORD}
-      - FIREWALL_INPUT_PORTS=9696,8191
       - TZ=Europe/Paris
+      - VPN_PORT_FORWARDING=on
+      - VPN_PORT_FORWARDING_PROVIDER=protonvpn
+      - HTTPPROXY=on
+      - HTTP_CONTROL_SERVER_AUTH_DEFAULT_ROLE={"auth":"none"}
+      - FIREWALL_OUTBOUND_SUBNETS=172.16.0.0/12,10.0.0.0/24
+      - FIREWALL_INPUT_PORTS=9696,8191,8082,8888,8080
     volumes:
-      - ./gluetun:/gluetun
+      - ../proxy/proxy_0:/gluetun
+      - ../proxy/custom0.ovpn:/gluetun/custom0.ovpn
     networks:
-      - shared-net
+      shared-net:
+        aliases:
+          - gluetun
+          - qbittorrentvpn
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:5.2.1
+    container_name: qbittorrent
+    restart: unless-stopped
+    network_mode: "service:proxy_0"
+    depends_on:
+      proxy_0:
+        condition: service_healthy
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=Europe/Paris
+      - WEBUI_PORT=8082
+      - QB_PASSWORD=${MEDIA_QB_PASSWORD}
+    volumes:
+      - ./qbittorrent:/config
+      - /mnt/DAS1:/media
+      - ./rustatio/torrents:/torrents
+
+  qbittorrent-port-sync:
+    image: alpine:3.21
+    container_name: qbittorrent-port-sync
+    restart: unless-stopped
+    network_mode: "service:proxy_0"
+    depends_on:
+      proxy_0:
+        condition: service_healthy
+      qbittorrent:
+        condition: service_started
+    environment:
+      - TZ=Europe/Paris
+      - QB_USER=admin
+      - QB_PASSWORD=${MEDIA_QB_PASSWORD}
+      - QB_URL=http://127.0.0.1:8082
+      - GLUETUN_URL=http://127.0.0.1:8000/v1/portforward
+      - INTERVAL=30
+    volumes:
+      - ./scripts/qbittorrent-port-sync.sh:/sync.sh:ro
+    entrypoint: ["/bin/sh", "/sync.sh"]
 
   byparr:
     image: ghcr.io/thephaseless/byparr:latest
     container_name: byparr
     restart: unless-stopped
-    network_mode: "service:gluetun"
+    network_mode: "service:proxy_0"
     depends_on:
-      - gluetun
+      proxy_0:
+        condition: service_healthy
     environment:
       - TZ=Europe/Paris
       - LOG_LEVEL=info
@@ -107,9 +126,10 @@ services:
     image: linuxserver/prowlarr
     container_name: prowlarr
     restart: unless-stopped
-    network_mode: "service:gluetun"
+    network_mode: "service:proxy_0"
     depends_on:
-      - gluetun
+      proxy_0:
+        condition: service_healthy
     volumes:
       - ./prowlarr:/config
     environment:
@@ -197,6 +217,76 @@ services:
       - JELLYSWARRM_USERNAME=admin
       - JELLYSWARRM_PASSWORD=${MEDIA_JELLYSWARRM_PASSWORD}
       - TZ=Europe/Paris
+    networks:
+      - shared-net
+
+  streamystats:
+    image: ghcr.io/fredrikburmester/streamystats-aio:latest
+    container_name: streamystats
+    restart: unless-stopped
+    ports:
+      - "3006:3000"
+    environment:
+      - TZ=Europe/Paris
+      - POSTGRES_USER=${MEDIA_STREAMYSTATS_POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${MEDIA_STREAMYSTATS_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${MEDIA_STREAMYSTATS_POSTGRES_DB:-streamystats}
+      - POSTGRES_HOST_AUTH_METHOD=scram-sha-256
+      - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256
+      - DATABASE_URL=postgresql://${MEDIA_STREAMYSTATS_POSTGRES_USER:-postgres}:${MEDIA_STREAMYSTATS_POSTGRES_PASSWORD}@localhost:5432/${MEDIA_STREAMYSTATS_POSTGRES_DB:-streamystats}
+      - SESSION_SECRET=${MEDIA_STREAMYSTATS_SESSION_SECRET}
+      - NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=${MEDIA_STREAMYSTATS_NEXT_SERVER_ACTIONS_ENCRYPTION_KEY}
+      - NODE_ENV=production
+    volumes:
+      - ./streamystats/data:/var/lib/postgresql/data
+    networks:
+      - shared-net
+
+  rustatio:
+    image: ghcr.io/takitsu21/rustatio:latest
+    container_name: rustatio
+    restart: unless-stopped
+    network_mode: "service:proxy_0"
+    depends_on:
+      proxy_0:
+        condition: service_healthy
+    environment:
+      - PORT=8080
+      - TZ=Europe/Paris
+      - RUST_LOG=info
+      - VPN_PORT_SYNC=on
+      - PUID=1001
+      - PGID=1001
+      - AUTH_TOKEN=${MEDIA_RUSTATIO_AUTH_TOKEN}
+    volumes:
+      - ./rustatio/data:/data
+      - ./rustatio/torrents:/torrents
+
+  proxy_1:
+    image: qmcgaw/gluetun
+    container_name: proxy_1
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - "8089:8888"
+    environment:
+      - VPN_SERVICE_PROVIDER=protonvpn
+      - VPN_TYPE=openvpn
+      - OPENVPN_CUSTOM_CONFIG=/gluetun/custom1.ovpn
+      - OPENVPN_USER=${MEDIA_OPENVPN_USER}
+      - OPENVPN_PASSWORD=${MEDIA_OPENVPN_PASSWORD}
+      - TZ=Europe/Paris
+      - VPN_PORT_FORWARDING_PROVIDER=protonvpn
+      - HTTPPROXY=on
+      - FIREWALL_OUTBOUND_SUBNETS=172.16.0.0/12,10.0.0.0/24
+      - FIREWALL_INPUT_PORTS=8888
+      - HTTP_CONTROL_SERVER_ADDRESS=:8001
+    volumes:
+      - ../proxy/proxy_1:/gluetun
+      - ../proxy/custom1.ovpn:/gluetun/custom1.ovpn
     networks:
       - shared-net
 
