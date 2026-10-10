@@ -94,6 +94,15 @@
           username: admin
           password: "{{HOMEPAGE_VAR_GRAFANA_PASSWORD}}"
 
+    - Scrutiny:
+        href: "{{HOMEPAGE_VAR_SCRUTINY_HREF}}"
+        icon: scrutiny
+        server: my-docker
+        container: scrutiny
+        widget:
+          type: scrutiny
+          url: http://scrutiny:8080
+
     - Crowdsec:
         href: "{{HOMEPAGE_VAR_CROWDSEC_HREF}}"
         icon: crowdsec
@@ -111,12 +120,6 @@
         icon: goaccess
         server: my-docker
         container: npmplus
-
-    - TEI Embeddings:
-        href: "{{HOMEPAGE_VAR_TEI_HREF}}"
-        icon: https://cdn.simpleicons.org/huggingface
-        server: my-docker
-        container: tei
 
     - Grafana - Proxmox CPU:
         href: "{{HOMEPAGE_VAR_GRAFANA_PROXMOX_HREF}}"

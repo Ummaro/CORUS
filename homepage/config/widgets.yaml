@@ -14,7 +14,16 @@
     disk: 
     - /mnt/DAS1
     - /mnt/DAS2
-    - /mnt/storage
+    expanded: true
+
+- resources:
+    label: SMB
+    disk: /mnt/storage
+    expanded: true
+
+- resources:
+    label: Backup
+    disk: /mnt/USB-Backup
     expanded: true
 
 - resources:

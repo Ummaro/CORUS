@@ -1,0 +1,80 @@
+services:
+  scrutiny-influxdb:
+    image: influxdb:2.8
+    container_name: scrutiny-influxdb
+    restart: unless-stopped
+    mem_limit: 512m
+    volumes:
+      - /mnt/storage/Docker/scrutiny/influxdb:/var/lib/influxdb2
+    environment:
+      - TZ=Europe/Paris
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=${SCRUTINY_INFLUXDB_USER}
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${SCRUTINY_INFLUXDB_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_ORG=${SCRUTINY_INFLUXDB_ORG}
+      - DOCKER_INFLUXDB_INIT_BUCKET=${SCRUTINY_INFLUXDB_BUCKET}
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${SCRUTINY_INFLUXDB_TOKEN}
+      - DOCKER_INFLUXDB_INIT_RETENTION=180d
+    healthcheck:
+      test: ["CMD", "influx", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 15s
+    networks:
+      - shared-net
+
+  scrutiny:
+    image: ghcr.io/analogj/scrutiny:v0.9.5-web
+    container_name: scrutiny
+    restart: unless-stopped
+    ports:
+      - "8085:8080"
+    volumes:
+      - /mnt/storage/Docker/scrutiny/config:/opt/scrutiny/config
+    environment:
+      - TZ=Europe/Paris
+      - SCRUTINY_WEB_INFLUXDB_HOST=scrutiny-influxdb
+      - SCRUTINY_WEB_INFLUXDB_PORT=8086
+      - SCRUTINY_WEB_INFLUXDB_TOKEN=${SCRUTINY_INFLUXDB_TOKEN}
+      - SCRUTINY_WEB_INFLUXDB_ORG=${SCRUTINY_INFLUXDB_ORG}
+      - SCRUTINY_WEB_INFLUXDB_BUCKET=${SCRUTINY_INFLUXDB_BUCKET}
+    depends_on:
+      scrutiny-influxdb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 15s
+    networks:
+      - shared-net
+
+  scrutiny-collector:
+    image: ghcr.io/analogj/scrutiny:v0.9.5-collector
+    container_name: scrutiny-collector
+    restart: unless-stopped
+    cap_add:
+      - SYS_RAWIO
+    devices:
+      - /dev/sdb:/dev/sdb
+      - /dev/sdc:/dev/sdc
+      - /dev/sdd:/dev/sdd
+    volumes:
+      - /run/udev:/run/udev:ro
+    environment:
+      - TZ=Europe/Paris
+      - COLLECTOR_API_ENDPOINT=http://scrutiny:8080
+      - COLLECTOR_HOST_ID=docker
+      - COLLECTOR_RUN_STARTUP=true
+      - COLLECTOR_CRON_SCHEDULE=0 */6 * * *
+    depends_on:
+      scrutiny:
+        condition: service_healthy
+    networks:
+      - shared-net
+
+networks:
+  shared-net:
+    external: true

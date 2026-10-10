@@ -19,6 +19,7 @@ services:
       - /mnt/DAS1:/mnt/DAS1:ro
       - /mnt/DAS2:/mnt/DAS2:ro
       - /mnt/storage:/mnt/storage:ro
+      - /mnt/USB-Backup:/mnt/USB-Backup:ro
     privileged: true
     restart: unless-stopped
     networks:
