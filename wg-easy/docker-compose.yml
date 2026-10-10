@@ -18,7 +18,7 @@ services:
       - "51821:51821"
       - "51820:51820/udp"
     volumes:
-      - ./config:/etc/wireguard
+      - /mnt/storage/Docker/wg-easy/config:/etc/wireguard
     cap_add:
       - NET_ADMIN
       - SYS_MODULE

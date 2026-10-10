@@ -8,8 +8,8 @@ services:
       WEBPASSWORD: '${PIHOLE_WEBPASSWORD}'
       FTLCONF_dns_listeningMode: 'all'
     volumes:
-      - './etc-pihole:/etc/pihole'
-      - './etc-dnsmasq.d:/etc/dnsmasq.d'
+      - /mnt/storage/Docker/pihole/etc-pihole:/etc/pihole
+      - /mnt/storage/Docker/pihole/etc-dnsmasq.d:/etc/dnsmasq.d
     cap_add:
       - NET_ADMIN
     restart: unless-stopped

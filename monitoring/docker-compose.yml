@@ -28,8 +28,8 @@ services:
     ports:
       - "8086:8086"
     volumes:
-      - ./influxdb-data:/var/lib/influxdb2
-      - ./influxdb-config:/etc/influxdb2
+      - /mnt/storage/Docker/monitoring/influxdb-data:/var/lib/influxdb2
+      - /mnt/storage/Docker/monitoring/influxdb-config:/etc/influxdb2
     environment:
       - DOCKER_INFLUXDB_INIT_MODE=setup
       - DOCKER_INFLUXDB_INIT_USERNAME=admin
@@ -52,8 +52,8 @@ services:
     ports:
       - "3030:3000"
     volumes:
-      - ./grafana-data:/var/lib/grafana
-      - ./grafana-provisioning:/etc/grafana/provisioning
+      - /mnt/storage/Docker/monitoring/grafana-data:/var/lib/grafana
+      - /mnt/storage/Docker/monitoring/grafana-provisioning:/etc/grafana/provisioning
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=${MONITORING_GF_SECURITY_ADMIN_PASSWORD}

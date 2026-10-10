@@ -8,7 +8,7 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./data:/data
+      - /mnt/storage/Docker/vaultwarden/data:/data
     env_file:
       - /home/docker/.env
     environment:

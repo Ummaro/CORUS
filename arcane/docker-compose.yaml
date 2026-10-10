@@ -6,7 +6,7 @@ services:
       - "3552:3552"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - arcane-data:/app/data
+      - /mnt/storage/Docker/arcane/data:/app/data
       - /home/docker:/home/docker
     environment:
       - APP_URL=http://localhost:3552
@@ -22,6 +22,3 @@ services:
 networks:
   shared-net:
     external: true
-
-volumes:
-  arcane-data:

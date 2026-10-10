@@ -1,0 +1,17 @@
+services:
+  erugo:
+    image: wardy784/erugo:latest
+    container_name: erugo
+    restart: unless-stopped
+    ports:
+      - "9998:80"
+    environment:
+      - TZ=Europe/Paris
+    volumes:
+      - /mnt/storage/Docker/erugo/erugo-storage:/var/www/html/storage
+    networks:
+      - shared-net
+
+networks:
+  shared-net:
+    external: true

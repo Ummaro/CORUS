@@ -1,0 +1,21 @@
+services:
+  samba:
+    image: dockurr/samba
+    container_name: samba
+    restart: unless-stopped
+    ports:
+      - "445:445"
+    environment:
+      - TZ=Europe/Paris
+      - NAME=storage
+      - USER=${SAMBA_USER}
+      - PASS=${SAMBA_PASSWORD}
+    volumes:
+      - /mnt/storage:/shared
+      - ./smb.conf:/etc/samba/smb.conf:ro
+    networks:
+      - shared-net
+
+networks:
+  shared-net:
+    external: true

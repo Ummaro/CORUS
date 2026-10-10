@@ -12,7 +12,7 @@ services:
       - GOTIFY_DEFAULTUSER_NAME=${GOTIFY_DEFAULTUSER_NAME}
       - GOTIFY_DEFAULTUSER_PASS=${GOTIFY_DEFAULTUSER_PASS}
     volumes:
-      - ./data:/app/data
+      - /mnt/storage/Docker/gotify/data:/app/data
     networks:
       - shared-net
 

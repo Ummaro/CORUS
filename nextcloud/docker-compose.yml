@@ -6,7 +6,7 @@ services:
     container_name: nextcloud-db
     restart: unless-stopped
     volumes:
-      - ./nextcloud-db:/var/lib/mysql
+      - /mnt/storage/Docker/nextcloud/nextcloud-db:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=${NEXTCLOUD_MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=nextcloud
@@ -22,8 +22,8 @@ services:
     ports:
       - "8081:80"
     volumes:
-      - ./nextcloud_config:/var/www/html
-      - ./nextcloud-data:/var/www/html/data
+      - /mnt/storage/Docker/nextcloud/nextcloud_config:/var/www/html
+      - /mnt/storage/Docker/nextcloud/nextcloud-data:/var/www/html/data
     environment:
       - MYSQL_PASSWORD=${NEXTCLOUD_MYSQL_PASSWORD}
       - MYSQL_DATABASE=nextcloud

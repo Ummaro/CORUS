@@ -10,13 +10,10 @@ services:
       - 8000:8000   # Port pour agents distants (inutile si local uniquement)
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
+      - /mnt/storage/Docker/portainer/data:/data
     networks:
       - shared-net
 
 networks:
   shared-net:
     external: true
-
-volumes:
-  portainer_data:

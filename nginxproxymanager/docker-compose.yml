@@ -10,8 +10,8 @@ services:
       - "81:81"
       - "443:443"
     volumes:
-      - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt
+      - /mnt/storage/Docker/nginxproxymanager/data:/data
+      - /mnt/storage/Docker/nginxproxymanager/letsencrypt:/etc/letsencrypt
     networks:
       - shared-net
 

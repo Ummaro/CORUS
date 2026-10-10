@@ -21,7 +21,7 @@ services:
     ports:
       - "5055:5055"
     volumes:
-      - ./seerr:/app/config
+      - /mnt/storage/Docker/media/seerr:/app/config
     environment:
       - TZ=Europe/Paris
       - LOG_LEVEL=info
@@ -62,7 +62,7 @@ services:
       - FIREWALL_OUTBOUND_SUBNETS=172.16.0.0/12,10.0.0.0/24
       - FIREWALL_INPUT_PORTS=9696,8191,8082,8888,8080
     volumes:
-      - ../proxy/proxy_0:/gluetun
+      - /mnt/storage/Docker/proxy/proxy_0:/gluetun
       - ../proxy/custom0.ovpn:/gluetun/custom0.ovpn
     networks:
       shared-net:
@@ -85,9 +85,9 @@ services:
       - WEBUI_PORT=8082
       - QB_PASSWORD=${MEDIA_QB_PASSWORD}
     volumes:
-      - ./qbittorrent:/config
+      - /mnt/storage/Docker/media/qbittorrent:/config
       - /mnt/DAS1:/media
-      - ./rustatio/torrents:/torrents
+      - /mnt/storage/Docker/media/rustatio/torrents:/torrents
 
   qbittorrent-port-sync:
     image: alpine:3.21
@@ -131,7 +131,7 @@ services:
       proxy_0:
         condition: service_healthy
     volumes:
-      - ./prowlarr:/config
+      - /mnt/storage/Docker/media/prowlarr:/config
     environment:
       - PUID=1001
       - PGID=1001
@@ -145,7 +145,7 @@ services:
     ports:
       - "7878:7878"
     volumes:
-      - ./radarr:/config
+      - /mnt/storage/Docker/media/radarr:/config
       - /mnt/DAS1:/media
     environment:
       - PUID=1001
@@ -165,7 +165,7 @@ services:
       - PGID=1001
       - TZ=Europe/Paris
     volumes:
-      - ./sonarr:/config
+      - /mnt/storage/Docker/media/sonarr:/config
       - /mnt/DAS1:/media
     networks:
       - shared-net
@@ -178,7 +178,7 @@ services:
     ports:
       - "6767:6767"
     volumes:
-      - ./bazarr:/config
+      - /mnt/storage/Docker/media/bazarr:/config
       - /mnt/DAS1:/media
     environment:
       - PUID=1001
@@ -188,11 +188,14 @@ services:
       - shared-net
 
   unpackerr:
-    image: golift/unpackerr
+    build:
+      context: .
+      dockerfile: unpackerr.Dockerfile
+    image: unpackerr:local
     container_name: unpackerr
     restart: unless-stopped
     volumes:
-      - ./unpackerr:/config
+      - /mnt/storage/Docker/media/unpackerr:/config
       - /mnt/DAS1:/media
     environment:
       - PUID=1001
@@ -212,7 +215,7 @@ services:
     ports: 
       - "3005:3000"
     volumes:
-      - ./jellyswarrm:/app/data
+      - /mnt/storage/Docker/media/jellyswarrm:/app/data
     environment:
       - JELLYSWARRM_USERNAME=admin
       - JELLYSWARRM_PASSWORD=${MEDIA_JELLYSWARRM_PASSWORD}
@@ -238,7 +241,7 @@ services:
       - NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=${MEDIA_STREAMYSTATS_NEXT_SERVER_ACTIONS_ENCRYPTION_KEY}
       - NODE_ENV=production
     volumes:
-      - ./streamystats/data:/var/lib/postgresql/data
+      - /mnt/storage/Docker/media/streamystats/data:/var/lib/postgresql/data
     networks:
       - shared-net
 
@@ -259,8 +262,8 @@ services:
       - PGID=1001
       - AUTH_TOKEN=${MEDIA_RUSTATIO_AUTH_TOKEN}
     volumes:
-      - ./rustatio/data:/data
-      - ./rustatio/torrents:/torrents
+      - /mnt/storage/Docker/media/rustatio/data:/data
+      - /mnt/storage/Docker/media/rustatio/torrents:/torrents
 
   proxy_1:
     image: qmcgaw/gluetun
@@ -285,7 +288,7 @@ services:
       - FIREWALL_INPUT_PORTS=8888
       - HTTP_CONTROL_SERVER_ADDRESS=:8001
     volumes:
-      - ../proxy/proxy_1:/gluetun
+      - /mnt/storage/Docker/proxy/proxy_1:/gluetun
       - ../proxy/custom1.ovpn:/gluetun/custom1.ovpn
     networks:
       - shared-net

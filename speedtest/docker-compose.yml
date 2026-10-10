@@ -12,7 +12,7 @@ services:
       - PGID=1000
       - SPEEDTEST_SCHEDULE=0 */1 * * *
     volumes:
-      - ./config:/config
+      - /mnt/storage/Docker/speedtest/config:/config
     restart: unless-stopped
     networks:
       - shared-net

@@ -42,6 +42,7 @@ services:
       # Mail
       - MAIL_FROM_NAME=addy.io
       - MAIL_FROM_ADDRESS=${ADDY_MAIL_FROM_ADDRESS}
+      - ANONADDY_SIGNING_KEY_FINGERPRINT=${ADDY_SIGNING_KEY_FINGERPRINT}
       # Postfix
       - POSTFIX_MESSAGE_SIZE_LIMIT=26214400
       - POSTFIX_SMTP_TLS=may
@@ -53,7 +54,7 @@ services:
       - RSPAMD_ENABLE=true
       - RSPAMD_WEB_PASSWORD=${ADDY_RSPAMD_WEB_PASSWORD}      # Remplacer par un mot de passe fort
     volumes:
-      - ./data:/data
+      - /mnt/storage/Docker/addy.io/data:/data
     networks:
       - addy-net
       - shared-net
@@ -68,7 +69,7 @@ services:
       - MYSQL_USER=anonaddy
       - MYSQL_PASSWORD=${ADDY_MYSQL_PASSWORD}           # Doit correspondre à DB_PASSWORD
     volumes:
-      - ./db:/var/lib/mysql
+      - /mnt/storage/Docker/addy.io/db:/var/lib/mysql
     networks:
       - addy-net
 
@@ -78,7 +79,7 @@ services:
     restart: unless-stopped
     command: redis-server --requirepass ${ADDY_REDIS_PASSWORD}  # Doit correspondre à REDIS_PASSWORD
     volumes:
-      - ./redis:/data
+      - /mnt/storage/Docker/addy.io/redis:/data
     networks:
       - addy-net
 

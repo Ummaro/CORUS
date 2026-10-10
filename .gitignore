@@ -12,3 +12,5 @@
 !/homepage/config/*.json
 !/homepage/config/*.css
 !/homepage/config/*.js
+!/samba/smb.conf
+!/media/unpackerr.Dockerfile

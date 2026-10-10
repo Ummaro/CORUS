@@ -11,7 +11,7 @@ services:
       - TZ=Europe/Paris
       - MODEL_ID=${TEI_MODEL_ID:-intfloat/multilingual-e5-small}
     volumes:
-      - ./data:/data
+      - /mnt/storage/Docker/tei/data:/data
     networks:
       - shared-net
 
